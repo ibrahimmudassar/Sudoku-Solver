@@ -130,3 +130,22 @@ def randn(x, y, max_val):
     return matrix
 
 
+def zeros(x, y):
+    matrix = []
+
+    for i in range(x):
+        temp = []
+        for j in range(y):
+            temp.append(0)
+        matrix.append(temp)
+
+    return matrix
+
+
+def compareMatrix(a, b):
+    for i in range(len(a)):
+        for j in range(len(a[0])):
+            if a[i][j] != b[i][j]:
+                return False
+
+    return True

@@ -14,7 +14,9 @@ from math import ceil
 
 try:
     import plotutilities as plotter
+    is_matplotlib_available = True
 except:
+    is_matplotlib_available = False
     print 'Plotting module could not be imported. Only textual output will be provided'
 import xumpy as np
 
@@ -50,17 +52,18 @@ def main():
     ts = time.time()
     # pass a deep copy of input_matrix to solver
     [solved_matrix, stats] = solve(np.copy(input_matrix), zero_indices, current_zero_index, stats)
+    time_to_solution = time.time() - ts
 
     out_path = path.replace('.csv', '_out.csv')
     write_solution(solved_matrix, out_path)
 
-    print_solution(solved_matrix)
+    print_solution(solved_matrix, time_to_solution, len(stats['index']))
 
-    try:
+    if is_matplotlib_available:
         fig_out_path = path.replace('.csv', '_out')
-        plotter.visualize_solution(input_matrix, solved_matrix, stats, zero_indices, ts, fig_out_path)
-    except:
-        raise
+        plotter.visualize_solution(input_matrix, solved_matrix, stats, zero_indices, ts, fig_out_path, time_to_solution)
+    else:
+        print 'Matplotlib import not successful. Cannot graphically display solution.'
 
     return solved_matrix, stats
 
@@ -112,11 +115,14 @@ def evaluate_solution(matrix, i, j, n):
     return valid
 
 
-def print_solution(solved_matrix):
-    print '====== Solution ======'
+def print_solution(solved_matrix, time_to_solution, iterations):
+    print '============= Stats ============='
+    print 'Time to solution: {:.4f} secs'.format(time_to_solution)
+    print 'Total iterations: {}'.format(iterations)
+    print '=========== Solution ============'
     for row in solved_matrix:
         print row
-    print '======================'
+    print '================================='
     validate_solution(solved_matrix)
 
 
@@ -151,5 +157,5 @@ def write_solution(solved_matrix, out_path):
 
 
 if __name__ == "__main__":
-    PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__)).rsplit('/',1)[0]
+    PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__)).replace('\\','/').rsplit('/',1)[0]
     main()

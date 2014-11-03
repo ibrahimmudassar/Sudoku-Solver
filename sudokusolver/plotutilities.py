@@ -9,7 +9,6 @@ __author__ = 'krishnakumarramamoorthy'
 
 
 import time
-import os
 
 import matplotlib.pyplot as plt
 import matplotlib.patches as patch
@@ -17,8 +16,7 @@ import matplotlib.patches as patch
 import xumpy as np
 
 
-def visualize_solution(input_matrix, solved_matrix, graph, zero_indices, ts, out_path):
-    time_to_solution = time.time() - ts
+def visualize_solution(input_matrix, solved_matrix, graph, zero_indices, ts, out_path, time_to_solution):
 
     # generating algorithm progress data for plotting
     [x, y, ylabels, eval_histogram, n] = generate_progress_data(graph, zero_indices)
@@ -188,3 +186,6 @@ def generate_sudoku_box_lines():
 
     return [x, y, xr, yr]
 
+
+if __name__ == "__main__":
+    generate_sudoku_box_lines()
