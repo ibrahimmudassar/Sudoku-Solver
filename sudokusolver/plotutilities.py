@@ -7,13 +7,14 @@ iteration, time taken to solve and shades the cells based on difficulty.
 
 __author__ = 'krishnakumarramamoorthy'
 
-import numpy as np
 
 import time
 import os
 
 import matplotlib.pyplot as plt
 import matplotlib.patches as patch
+
+import xumpy as np
 
 
 def visualize_solution(input_matrix, solved_matrix, graph, zero_indices, ts, out_path):
@@ -51,13 +52,13 @@ def visualize_solution(input_matrix, solved_matrix, graph, zero_indices, ts, out
 def generate_progress_data(graph, zero_indices):
     counter = 0
     n = 0
-    eval_histogram = np.zeros((len(zero_indices[0]), 1))
+    eval_histogram = [0] * len(zero_indices[0])
     ylabels = []
     x = []
     y = []
     for n in range(len(graph['index'])):
         y.append(graph['index'][n][1])
-        eval_histogram[graph['index'][n][1], 0] += 1
+        eval_histogram[graph['index'][n][1]] += 1
         ylabels.append('[{},{}]'.format(zero_indices[0][graph['index'][n][1]] + 1,
                                         zero_indices[1][graph['index'][n][1]] + 1))
         x.append(counter)
@@ -77,7 +78,7 @@ def plot_decorate_performance_data(ax1, x, y, ylabels):
 
 def create_colorbar(ax2, max_eval_per_cell):
     # create a temporary imshow and use it to create a colorbar, then remove the imshow object
-    data = np.clip(np.random.randn(10, 10) * max_eval_per_cell[0], 0, max_eval_per_cell[0])
+    data = np.randn(10, 10, max_eval_per_cell)
     cax = plt.imshow(data, interpolation='nearest', cmap=plt.cm.Blues)
     cbar = plt.colorbar(cax, orientation='horizontal', ticks=[0, max_eval_per_cell])
     cbar.solids.set_edgecolor(None)
@@ -106,11 +107,11 @@ def fill_numbers(ax2, input_matrix, solved_matrix):
     for i in range(9):
         for j in range(9):
             # quirk: when plotting matrix, transpose it; i is in y-axis and j is in x-axis
-            if input_matrix[i, j] == 0:
-                ax2.text(j + 0.5, i + 0.5, solved_matrix[i, j], horizontalalignment='center',
+            if input_matrix[i][j] == 0:
+                ax2.text(j + 0.5, i + 0.5, solved_matrix[i][j], horizontalalignment='center',
                          verticalalignment='center', color='black', fontsize=10)
             else:
-                ax2.text(j + 0.5, i + 0.5, solved_matrix[i, j], horizontalalignment='center',
+                ax2.text(j + 0.5, i + 0.5, solved_matrix[i][j], horizontalalignment='center',
                          verticalalignment='center', color='gray', alpha=0.7, fontsize=10)
 
 
@@ -120,7 +121,7 @@ def shade_cell_by_difficulty(ax2, zero_indices, eval_histogram, max_eval_per_cel
         i = zero_indices[0][c]
         j = zero_indices[1][c]
         # quirk: when plotting matrix, transpose it; i is in y-axis and j is in x-axis
-        ax2.add_patch(patch.Rectangle((j, i), 1, 1, facecolor=plt.cm.Blues(eval_histogram[c] / max_eval_per_cell[0])[0],
+        ax2.add_patch(patch.Rectangle((j, i), 1, 1, facecolor=plt.cm.Blues(eval_histogram[c]*1.0 / max_eval_per_cell),
                                       alpha=0.5))
 
 

@@ -12,12 +12,10 @@ readme = open('README.rst').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 requirements = [
-    'matplotlib',
-    'numpy'
+    'matplotlib'
 ]
 
 test_requirements = [
-    'pytest'
 ]
 
 setup(
