@@ -18,11 +18,11 @@ The program runs in less than a second to solve the puzzle. Tested with easy, di
   - The program accepts Soduku puzzle in a .csv file. Each line should have 9 numbers separated by comma. The file should contain 9 lines.
 - Execution:
   - (Optional) Execute: 'python setup.py install'. It will try to install dependencies (matplotlib).
-  - Solving: Run 'python sudokusolver.py {/path/to/input/file.csv}
+  - Solving: Run 'python sudokusolver.py \</path/to/input/file.csv\>'
 - Output: 
   - Solution is printed to the console
-  - Solution is written to {/path/to/input/file}_out.csv file
-  - If matplotlib is available, screenshot of figure is saved to {/path/to/input/file}_out.png file
+  - Solution is written to \</path/to/input/file\>\_out.csv file
+  - If matplotlib is available, screenshot of figure is saved to \</path/to/input/file\>\_out.png file
 
 ###Other Info:
 - Test: 
