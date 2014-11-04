@@ -7,7 +7,6 @@ iteration, time taken to solve and shades the cells based on difficulty.
 
 __author__ = 'krishnakumarramamoorthy'
 
-
 import time
 
 import matplotlib.pyplot as plt
@@ -17,37 +16,43 @@ import xumpy as np
 
 
 def visualize_solution(input_matrix, solved_matrix, graph, zero_indices, ts, out_path, time_to_solution):
-
-    # generating algorithm progress data for plotting
-    [x, y, ylabels, eval_histogram, n] = generate_progress_data(graph, zero_indices)
-    max_eval_per_cell = max(eval_histogram)
-    total_iterations = n
-
-    # plot the backtracking algorithm performance in a larger section of the plot
+    """
+    Plotting function that takes sudoku solution and intermediate data
+    and plots them. It create three axes, one for plotting the progress,
+    one for printing the summary metrics, and one for solved sudoku.
+    """
+    # prepare figure window for plotting
     plt.figure().patch.set_facecolor('white')
     plt.suptitle('Sudoku Solver\n', fontsize=20, color=plt.cm.Blues(0.9))
 
     # plot the performance: number of iterations vs. numbers filled
-    ax1 = plt.subplot2grid((2, 3), (0, 0), rowspan=2, colspan=2)
+    ax1 = plt.subplot2grid((20, 3), (1, 0), rowspan=17, colspan=2)
+    [x, y, ylabels, eval_histogram, n] = generate_progress_data(graph, zero_indices)
+    max_eval_per_cell = max(eval_histogram)
+    total_iterations = n
     plot_decorate_performance_data(ax1, x, y, ylabels)
 
     # work on sudoku box area
-    ax2 = plt.subplot2grid((2, 3), (1, 2), rowspan=1, colspan=1)
+    ax2 = plt.subplot2grid((20, 3), (10, 2), rowspan=10, colspan=1)
     create_colorbar(ax2, max_eval_per_cell)
     decorate_sudoku_box(ax2)
     fill_numbers(ax2, input_matrix, solved_matrix)
     shade_cell_by_difficulty(ax2, zero_indices, eval_histogram, max_eval_per_cell)
 
     # work on statistics area
-    ax3 = plt.subplot2grid((2, 3), (0, 2), rowspan=1, colspan=1)
+    ax3 = plt.subplot2grid((20, 3), (1, 2), rowspan=7, colspan=1)
     time_to_plot = time.time() - ts
     write_statistics(ax3, time_to_solution, time_to_plot, total_iterations)
 
+    # save figure and show
     plt.savefig(out_path)
     plt.show()
 
 
 def generate_progress_data(graph, zero_indices):
+    """
+    Generate data for plotting the number of evaluations and cell being evaluated
+    """
     counter = 0
     n = 0
     eval_histogram = [0] * len(zero_indices[0])
@@ -65,8 +70,11 @@ def generate_progress_data(graph, zero_indices):
 
 
 def plot_decorate_performance_data(ax1, x, y, ylabels):
+    """
+    Modify the objects in performance plot. Add labels, resize font, etc.
+    """
     ax1.plot(x, y)
-    ax1.set_title('Performance', fontsize=11, color='black', alpha=0.9)
+    ax1.set_title('Progress', fontsize=11, color='black', alpha=0.9)
     plt.xlabel('How long did it take to solve? \n (Number of Evaluations)', fontsize=10)
     plt.ylabel('Which cell was evaluated? (Unfilled Cell Index)', fontsize=10)
     # label the y-axis with the cell location in sudoku grid
@@ -75,17 +83,23 @@ def plot_decorate_performance_data(ax1, x, y, ylabels):
 
 
 def create_colorbar(ax2, max_eval_per_cell):
+    """
+    Create a color index for the colors used to show difficulty of cells in sudoku grid
+    """
     # create a temporary imshow and use it to create a colorbar, then remove the imshow object
     data = np.randn(10, 10, max_eval_per_cell)
     cax = plt.imshow(data, interpolation='nearest', cmap=plt.cm.Blues)
-    cbar = plt.colorbar(cax, orientation='horizontal', ticks=[0, max_eval_per_cell])
+    cbar = plt.colorbar(cax, orientation='horizontal', ticks=[])
     cbar.solids.set_edgecolor(None)
-    cbar.ax.set_xlabel('Which cell was challenging? \n (# of Evaluations/Cell)', fontsize=10)
+    cbar.ax.set_xlabel('How difficult was it to solve?\n(Easy - - - > Difficult)', fontsize=10)
     # clear dummy imshow plot; anything plotted before in ax2 won't persist. cbar is on its own axes
     ax2.cla()
 
 
 def decorate_sudoku_box(ax2):
+    """
+    Modify line and color properties of sudoku grid to make it look good
+    """
     [x, y, xr, yr] = generate_sudoku_box_lines()
     ax2.set_title('Solution\n\n', fontsize=11, color='black', alpha=0.9)
     ax2.plot(x, y, color='gray')
@@ -114,12 +128,17 @@ def fill_numbers(ax2, input_matrix, solved_matrix):
 
 
 def shade_cell_by_difficulty(ax2, zero_indices, eval_histogram, max_eval_per_cell):
+    """
+    Shade the unfilled cells in sudoku box with a color representing
+    difficulty. Difficulty is defined as number of times that cell
+    was evaluated.
+    """
     # fill the background with difficulty metric
     for c in range(len(zero_indices[0])):
         i = zero_indices[0][c]
         j = zero_indices[1][c]
         # quirk: when plotting matrix, transpose it; i is in y-axis and j is in x-axis
-        ax2.add_patch(patch.Rectangle((j, i), 1, 1, facecolor=plt.cm.Blues(eval_histogram[c]*1.0 / max_eval_per_cell),
+        ax2.add_patch(patch.Rectangle((j, i), 1, 1, facecolor=plt.cm.Blues(eval_histogram[c] * 1.0 / max_eval_per_cell),
                                       alpha=0.5))
 
 
@@ -140,7 +159,7 @@ def write_statistics(ax3, time_to_solution, time_to_plot, total_iterations):
              fontsize=12, color='gray')
     ax3.text(0.5, 0.3, '{} \n'.format(total_iterations), horizontalalignment='center',
              verticalalignment='center', fontsize=16)
-    ax3.text(0.5, 0.25, 'Number of iterations', horizontalalignment='center', verticalalignment='center',
+    ax3.text(0.5, 0.25, 'Number of evaluations', horizontalalignment='center', verticalalignment='center',
              fontsize=12, color='gray')
 
 
@@ -186,6 +205,3 @@ def generate_sudoku_box_lines():
 
     return [x, y, xr, yr]
 
-
-if __name__ == "__main__":
-    generate_sudoku_box_lines()

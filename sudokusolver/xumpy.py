@@ -39,49 +39,30 @@ def where(matrix, val):
         for i in range(row):
             for j in range(col):
                 if matrix[i][j] == val:
-                   xmatches.append(i)
-                   ymatches.append(j)
+                    xmatches.append(i)
+                    ymatches.append(j)
     except:
         for i in range(row):
             if matrix[i] == val:
-               xmatches.append(i)
-               ymatches.append(0)
+                xmatches.append(i)
+                ymatches.append(0)
 
-    return [xmatches,ymatches]
-
-
-def reshape(matrix, nrow, ncol):
-    row = len(matrix)
-    col = len(matrix[0])
-
-    flat_array = []
-
-    new_matrix = []
-
-    counter = 0
-    for i in range(row):
-        for j in range(col):
-            flat_array[counter] = matrix[i][j]
-            counter += 1
-
-    for i in range(nrow):
-        temp = []
-        for j in range(ncol):
-                temp.append(flat_array[counter])
-        new_matrix.append(temp)
-
-    return new_matrix
+    return [xmatches, ymatches]
 
 
 def loadtxt(path, **kwargs):
     matrix = []
-    with open(path, 'r') as f:
-        for line in f:
-            fields = line.split(",")
-            temp = []
-            for item in fields:
-                temp.append(int(item))
-            matrix.append(temp)
+    try:
+        with open(path, 'r') as f:
+            for line in f:
+                fields = line.split(",")
+                temp = []
+                for item in fields:
+                    temp.append(int(item))
+                matrix.append(temp)
+    except IOError:
+        print 'Cannot find input file in default location ./data/input.csv'
+        raise
 
     return matrix
 
@@ -92,7 +73,7 @@ def savetxt(path, matrix, **kwargs):
 
         for array in matrix:
             for val in array:
-                text += str(val)+','
+                text += str(val) + ','
             text = text[0:-1]
             text += '\n'
 
@@ -107,18 +88,25 @@ def get_sub_matrix(matrix, start_row, end_row, start_col, end_col):
 
 
 def arange(start, stop, increment):
+    """
+    Array range returns an array with values beginning with start,
+    advanced by increment and with values up to the stop value.
+    """
     array = []
     counter = 0
     while True:
-        new_val = start + increment*counter
+        new_val = start + increment * counter
         counter += 1
-        if (new_val >= stop):
+        if new_val >= stop:
             break
         array.append(new_val)
     return array
 
 
 def randn(x, y, max_val):
+    """
+    Fill random integers in x-by-y matrix with maximum integer of max_val
+    """
     matrix = []
 
     for i in range(x):
@@ -131,6 +119,9 @@ def randn(x, y, max_val):
 
 
 def zeros(x, y):
+    """
+    Returns a x-by-y matrix filled with zeros
+    """
     matrix = []
 
     for i in range(x):
@@ -142,7 +133,10 @@ def zeros(x, y):
     return matrix
 
 
-def compareMatrix(a, b):
+def comparematrix(a, b):
+    """
+    Does element-wise comparison of two matrices a and b
+    """
     for i in range(len(a)):
         for j in range(len(a[0])):
             if a[i][j] != b[i][j]:
