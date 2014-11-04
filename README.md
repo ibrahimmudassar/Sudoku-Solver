@@ -3,6 +3,8 @@
 A simple python implementation of recursive backtracking algorithm to solve Sudoku puzzle. 
 The program runs in less than a second to solve the puzzle. Tested with easy, difficult and all empty puzzle.
 
+![Alt text](https://github.com/ipower2/Sudoku-Solver/blob/master/data/input_out.png "Sample solution")
+
 ###Dependencies:
 - None: 
  - Sodukusolver and xumpy modules are sufficient to run this program.
@@ -27,4 +29,3 @@ The program runs in less than a second to solve the puzzle. Tested with easy, di
  - Unit tests are in tests package
 - xumpy module is used to eliminate dependency on numpy
  
-![Alt text](https://github.com/ipower2/Sudoku-Solver/blob/master/data/input_out.png "Sample solution")
